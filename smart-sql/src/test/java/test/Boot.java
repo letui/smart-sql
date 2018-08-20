@@ -1,6 +1,9 @@
 package test;
 
 
+import static org.smartsql.ex.L.select;
+import static org.smartsql.ex.Q.$;
+
 import javax.sql.DataSource;
 
 import org.apache.commons.dbcp.BasicDataSource;
@@ -8,10 +11,20 @@ import org.smartsql.core.$;
 import org.smartsql.core.A;
 import org.smartsql.core.M;
 import org.smartsql.core.T;
+import org.smartsql.ex.S;
 import org.smartsql.ex.SQL;
 
 public class Boot {
+	
 	public static void main(String[] args) {
+		//$(S.url("").user("").pwd("").driver("").sql_path(""));	
+		$(S.init(setup(),"src/main/resources"));
+		
+		String rst=$(select).done("test#count");
+		
+		System.out.println(rst);
+	}
+	public static void main2(String[] args) {
 		$ s = $.init(setup(),"src/main/resources");
 		
 		String rst=s.select("test#count");
