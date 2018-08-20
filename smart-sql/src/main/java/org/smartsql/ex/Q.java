@@ -1,6 +1,7 @@
 package org.smartsql.ex;
 
 import org.smartsql.core.$;
+import org.smartsql.core.A;
 
 //封装$，支持JQUERY风格操作方式
 public class Q {
@@ -29,6 +30,36 @@ public class Q {
 	public String done(String target) {
 		if(this._L.get().equals(L.select)) {
 			return this._$.get().select(target);
+		}else if(this._L.get().equals(L.delete)) {
+			return this._$.get().delete(target)+"";
+		}else if(this._L.get().equals(L.update)) {
+			return this._$.get().update(target)+"";
+		}else if(this._L.get().equals(L.update)) {
+			return this._$.get().insert(target)+"";
+		}
+		return null;
+	}
+	public String done(String target,Object...params) {
+		if(this._L.get().equals(L.select)) {
+			return this._$.get().select(target,params);
+		}else if(this._L.get().equals(L.delete)) {
+			return this._$.get().delete(target)+"";
+		}else if(this._L.get().equals(L.update)) {
+			return this._$.get().update(target)+"";
+		}else if(this._L.get().equals(L.update)) {
+			return this._$.get().insert(target)+"";
+		}
+		return null;
+	}
+	public <T> T done(A target,Class<T> t,Object...params) {
+		if(this._L.get().equals(L.select)) {
+			return this._$.get().select(target,t,params);
+		}
+		return null;
+	}
+	public <T> T done(A target,Object...params) {
+		if(this._L.get().equals(L.select)) {
+			return this._$.get().select(target,params);
 		}
 		return null;
 	}

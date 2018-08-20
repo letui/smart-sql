@@ -23,6 +23,17 @@ public class Boot {
 		String rst=$(select).done("test#count");
 		
 		System.out.println(rst);
+		
+			rst=$(select).done("test#select",2);
+		
+		System.out.println(rst);
+		
+		Person p=$(select).done(A.file("test").sql("select"),Person.class,2);
+		
+		System.out.println(p.getAge());
+		
+		 p=$(select).done(A.file("test").sql("select").pojo(Person.class),1);
+		 System.out.println(p.getUname());
 	}
 	public static void main2(String[] args) {
 		$ s = $.init(setup(),"src/main/resources");
@@ -55,7 +66,6 @@ public class Boot {
 		$ smart = $.init(setup(),"src/main/resources").config(M.autoCommit(false));
 		
 		SQL sql=SQL.select().from("person").where().andEqual("id", "1");
-		System.out.println(sql);
 		System.out.println(smart.select(sql));
 		
 		
