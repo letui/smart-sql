@@ -25,6 +25,7 @@ $ s = $.init(setup(),"src/main/resources");//setup() return instance of DataSour
 Person p=s.select("test#select", Person.class, 2);
 System.out.println(p.getAge());
 
+
 OR
 
 A target=A.file("test").sql("select");
