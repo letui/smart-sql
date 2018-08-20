@@ -143,13 +143,26 @@ public class $ {
 		String sql=r.get(target);
 		return exe(sql);
 	}
+	public boolean delete(String target,Object...params) {
+		String sql=r.get(target);
+		return exe(sql);
+	}
 
 	public boolean update(String target) {
 		String sql=r.get(target);
 		return exe(sql);
 	}
+	public boolean update(String target,Object...params) {
+		String sql=r.get(target);
+		return exe(sql);
+	}
 
 	public boolean insert(String target) {
+		String sql=r.get(target);
+		return exe(sql);
+	}
+	
+	public boolean insert(String target,Object...params) {
 		String sql=r.get(target);
 		return exe(sql);
 	}
