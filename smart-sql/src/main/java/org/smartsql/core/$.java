@@ -35,10 +35,6 @@ public class $ {
 	public <T> T select(A target, Object... args) {
 		return (T) select(target.key, target.pojo, args);
 	}
-	@SuppressWarnings("hiding")
-	public <T> T select(A target, Class<T> pojo, Object... args) {
-		return select(target.key, pojo, args);
-	}
 
 	@SuppressWarnings("hiding")
 	public <T> T select(String target, Class<T> pojo, Object... args) {
@@ -92,6 +88,72 @@ public class $ {
 					} while (++sub < subtables.length && tbl != null);
 				}
 				return rt;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public <Z> ArrayList<Z> select(Class<Z> pojo,String target, Object... args) {
+		ArrayList<Z> pojoList=new ArrayList<Z>();
+		String sql = r.get(target);
+		PreparedStatement prp = prepare(sql);
+		try {
+			if (args != null && args.length > 0) {
+				for (int i = 0; i < args.length; i++) {
+					prp.setObject(1 + i, args[i]);
+				}
+			}
+			ResultSet rst = prp.executeQuery();
+			Table table = pojo.getAnnotation(Table.class);
+			if (table != null) {
+				while (rst.next()) {
+					Z rt = pojo.newInstance();
+					Field[] entryFields = pojo.getDeclaredFields();
+					for (int i = 0; i < entryFields.length; i++) {
+						Column ano = entryFields[i].getAnnotation(Column.class);
+						if (ano != null) {
+							Object dbValue = rst.getObject(ano.value());
+							entryFields[i].setAccessible(true);
+							entryFields[i].set(rt, dbValue);
+						}
+					}
+					pojoList.add(rt);
+				}
+				return pojoList;
+			}
+			
+			Wrap wrap = pojo.getAnnotation(Wrap.class);
+			if (wrap != null) {
+				int sub = 0;
+				while (rst.next()) {
+					Z rt = pojo.newInstance();
+					Field[] subtables = pojo.getDeclaredFields();
+					Table tbl = subtables[sub].getAnnotation(Table.class);
+					do {
+						Class<?> subObjClass = subtables[sub].getType();
+						Field[] entryFields = subObjClass.getDeclaredFields();
+						Object subObj = subObjClass.newInstance();
+						for (int i = 0; i < entryFields.length; i++) {
+							Column ano = entryFields[i].getAnnotation(Column.class);
+							if (ano != null) {
+								Object dbValue = rst.getObject(ano.value());
+								entryFields[i].setAccessible(true);
+								entryFields[i].set(subObj, dbValue);
+							}
+						}
+						
+						subtables[sub].setAccessible(true);
+						subtables[sub].set(rt, subObj);
+					} while (++sub < subtables.length && tbl != null);
+					pojoList.add(rt);
+				}
+				return pojoList;
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

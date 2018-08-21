@@ -1,5 +1,7 @@
 #select
 select * from person where id = ? 
+#all
+select * from person
 #count
 select count(*) from 
 person

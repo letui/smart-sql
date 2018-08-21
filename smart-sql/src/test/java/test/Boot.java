@@ -4,6 +4,10 @@ package test;
 import static org.smartsql.ex.L.select;
 import static org.smartsql.ex.Q.$;
 
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.sql.DataSource;
 
 import org.apache.commons.dbcp.BasicDataSource;
@@ -15,10 +19,17 @@ import org.smartsql.ex.S;
 import org.smartsql.ex.SQL;
 
 public class Boot {
-	
 	public static void main(String[] args) {
+		$ s = $.init(setup(),"src/main/resources");
+		ArrayList<Person> plist=s.select(Person.class,"test#all");
+		System.out.println(plist);
+	}
+	
+	
+	public static void main3(String[] args) {
 		//$(S.url("").user("").pwd("").driver("").sql_path(""));	
 		$(S.init(setup(),"src/main/resources"));
+		
 		
 		String rst=$(select).done("test#count");
 		
