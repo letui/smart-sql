@@ -22,6 +22,7 @@ public class R {
 				String key$=null;
 				StringBuffer sql=null;
 				while ((str = in.readLine()) != null) {
+					if(str.startsWith("\\\\"))continue;
 					if(str.startsWith("#")) {
 						if(!sqlMap.containsKey(key$)&&sql!=null) {
 							sqlMap.put(key$, sql.toString());
@@ -39,6 +40,9 @@ public class R {
 		}
 	}
 	public String get(String target) {
+		if(!sqlMap.containsKey(target)) {
+			throw new RuntimeException("can not find sql with:"+target);
+		}
 		return sqlMap.get(target);
 	}
 

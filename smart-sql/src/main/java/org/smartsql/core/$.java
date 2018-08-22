@@ -217,7 +217,7 @@ public class $ {
 
 	public boolean delete(String target, Object... params) {
 		String sql = r.get(target);
-		return exe(sql);
+		return exe(sql,params);
 	}
 
 	public boolean update(String target) {
@@ -227,7 +227,7 @@ public class $ {
 
 	public boolean update(String target, Object... params) {
 		String sql = r.get(target);
-		return exe(sql);
+		return exe(sql,params);
 	}
 
 	public boolean insert(String target) {
@@ -237,7 +237,23 @@ public class $ {
 
 	public boolean insert(String target, Object... params) {
 		String sql = r.get(target);
-		return exe(sql);
+		return exe(sql,params);
+	}
+	
+	public boolean exe(String sql,Object...params) {
+		try {
+			PreparedStatement prp=prepare(sql);
+			if (params != null && params.length > 0) {
+				for (int i = 0; i < params.length; i++) {
+					prp.setObject(1 + i, params[i]);
+				}
+			}
+			prp.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
 	}
 
 	public boolean exe(String sql) {
