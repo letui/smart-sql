@@ -5,10 +5,13 @@ import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.sql.DataSource;
 
@@ -16,6 +19,7 @@ import org.smartsql.ex.SQL;
 import org.smartsql.inf.Column;
 import org.smartsql.inf.Table;
 import org.smartsql.inf.Wrap;
+
 
 public class $ {
 	public static final String mysql_driver = "com.mysql.jdbc.Driver";
@@ -165,11 +169,11 @@ public class $ {
 		return null;
 	}
 
-	public String select(String target, Object... args) {
+	public List<Map<String,Object>> select(String target, Object... args) {
 		String sql = r.get(target);
 		return selectDirectly(sql, args);
 	}
-	private String selectDirectly(String sql, Object... args) {
+	private List<Map<String,Object>> selectDirectly(String sql, Object... args) {
 		PreparedStatement prp = prepare(sql);
 		try {
 			if (args != null && args.length > 0) {
@@ -179,25 +183,26 @@ public class $ {
 			}
 			ResultSet rst = prp.executeQuery();
 			int columnCount = rst.getMetaData().getColumnCount();
-			List<Object> rowsList = new ArrayList<Object>();
+			List<Map<String,Object>> rowsList = new ArrayList<Map<String,Object>>();
+			ResultSetMetaData rstMt=rst.getMetaData();
 			while (rst.next()) {
-				List<Object> row = new ArrayList<Object>();
+				Map<String,Object> row=new HashMap<String,Object>();
 				for (int i = 0; i < columnCount; i++) {
-					row.add(rst.getObject(i + 1));
+					row.put(rstMt.getColumnLabel(i+1),rst.getObject(i + 1));
 				}
 				rowsList.add(row);
 			}
-			return rowsList.toString();
+			return rowsList;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return null;
 	}
 
-	public String select(String target) {
+	public List<Map<String,Object>> select(String target) {
 		return select(target,new Object[0]);
 	}
-	public String select(SQL sql) {
+	public List<Map<String,Object>> select(SQL sql) {
 		return selectDirectly(sql.toString(),new Object[0]);
 	}
 

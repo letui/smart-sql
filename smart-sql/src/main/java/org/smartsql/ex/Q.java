@@ -1,5 +1,7 @@
 package org.smartsql.ex;
 
+import java.util.ArrayList;
+
 import org.smartsql.core.$;
 import org.smartsql.core.A;
 
@@ -29,7 +31,7 @@ public class Q {
 	
 	public String done(String target) {
 		if(this._L.get().equals(L.select)) {
-			return this._$.get().select(target);
+			return this._$.get().select(target).toString();
 		}else if(this._L.get().equals(L.delete)) {
 			return this._$.get().delete(target)+"";
 		}else if(this._L.get().equals(L.update)) {
@@ -41,7 +43,7 @@ public class Q {
 	}
 	public String done(String target,Object...params) {
 		if(this._L.get().equals(L.select)) {
-			return this._$.get().select(target,params);
+			return this._$.get().select(target,params).toString();
 		}else if(this._L.get().equals(L.delete)) {
 			return this._$.get().delete(target)+"";
 		}else if(this._L.get().equals(L.update)) {
@@ -54,6 +56,12 @@ public class Q {
 	public <T> T done(A target,Class<T> t,Object...params) {
 		if(this._L.get().equals(L.select)) {
 			return this._$.get().select(target,t,params);
+		}
+		return null;
+	}
+	public <Z> ArrayList<Z> select(Class<Z> pojo,String target, Object... args) {
+		if(this._L.get().equals(L.select)) {
+			return this._$.get().select(pojo, target, args);
 		}
 		return null;
 	}
