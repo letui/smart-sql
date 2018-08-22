@@ -248,22 +248,20 @@ public class $ {
 					prp.setObject(1 + i, params[i]);
 				}
 			}
-			prp.executeUpdate();
+			return prp.executeUpdate()>1;
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
 		}
-		return true;
 	}
 
 	public boolean exe(String sql) {
 		try {
-			statement().execute(sql);
+			return statement().execute(sql);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
 		}
-		return true;
 	}
 
 	public void commit() {
@@ -311,7 +309,17 @@ public class $ {
 			try {
 				ResultSet rst = prp.executeQuery();
 				while (rst.next()) {
-					System.out.println(rst.getString(1));
+					String tableName=rst.getString(1);
+					System.out.println(tableName);
+					ResultSet tbRst=prepare("describe "+rst.getString(1)).executeQuery();
+					int colCount=tbRst.getMetaData().getColumnCount();
+					while(tbRst.next()) {
+						for (int i = 0; i < colCount; i++) {
+							System.out.print(tbRst.getMetaData().getColumnName(i+1)+":");
+							System.out.print(tbRst.getString(i+1)+",");
+						}
+						System.out.println();
+					}
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
@@ -319,7 +327,7 @@ public class $ {
 		}
 	}
 
-	public Connection connect() {
+	protected Connection connect() {
 		try {
 
 			if (local.get() == null || local.get().isClosed()) {
@@ -335,7 +343,7 @@ public class $ {
 		return null;
 	}
 
-	public Statement statement() {
+	protected Statement statement() {
 		try {
 			return connect().createStatement();
 		} catch (SQLException e) {
@@ -344,7 +352,7 @@ public class $ {
 		return null;
 	}
 
-	public PreparedStatement prepare(String sql) {
+	protected PreparedStatement prepare(String sql) {
 		try {
 			return connect().prepareStatement(sql);
 		} catch (SQLException e) {
