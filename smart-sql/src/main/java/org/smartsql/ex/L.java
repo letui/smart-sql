@@ -1,5 +1,5 @@
 package org.smartsql.ex;
 
 public enum L {
-	select,delete,update,insert
+	select,delete,update,insert,create
 }

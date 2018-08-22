@@ -4,13 +4,12 @@ package test;
 import static org.smartsql.ex.L.select;
 import static org.smartsql.ex.Q.$;
 
-import java.lang.reflect.Method;
+import java.sql.DatabaseMetaData;
+import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.sql.DataSource;
 
-import org.apache.commons.dbcp.BasicDataSource;
 import org.smartsql.core.$;
 import org.smartsql.core.A;
 import org.smartsql.core.M;
@@ -18,18 +17,23 @@ import org.smartsql.core.T;
 import org.smartsql.ex.S;
 import org.smartsql.ex.SQL;
 
+import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource;
+
 public class Boot {
 	public static void main(String[] args) {
 		$ s = $.init(setup(),"src/main/resources");
 		ArrayList<Person> plist=s.select(Person.class,"test#all");
 		System.out.println(plist);
+		
+		String url="jdbc:mysql://localhost:3306/test?useUnicode=true&characterEncoding=utf-8&autoReconnect=true&failOverReadOnly=false";
+		s=$.init(S.url(url).user("root").pwd("").sqlpath("src/main/resources"));
+		System.out.println(s.select("test#all"));
+		
 	}
 	
 	
 	public static void main3(String[] args) {
-		//$(S.url("").user("").pwd("").driver("").sql_path(""));	
 		$(S.init(setup(),"src/main/resources"));
-		
 		
 		String rst=$(select).done("test#count");
 		
@@ -49,7 +53,7 @@ public class Boot {
 	public static void main2(String[] args) {
 		$ s = $.init(setup(),"src/main/resources");
 		
-		String rst=s.select("test#count");
+		String rst=s.select("test#count").toString();
 		System.out.println(rst);
 		
 		Person p=s.select("test#select", Person.class, 2);
@@ -69,9 +73,6 @@ public class Boot {
 		
 		
 		
-		TestThread ts=new TestThread();
-		ts.s=s;
-		ts.start();
 		
 		
 		$ smart = $.init(setup(),"src/main/resources").config(M.autoCommit(false));
@@ -85,10 +86,11 @@ public class Boot {
 	}
 
 	public static DataSource setup() {
-		String url="jdbc:mysql://localhost:3306/test?user=root&password=&useUnicode=true&characterEncoding=utf-8&autoReconnect=true&failOverReadOnly=false";
-		BasicDataSource rst=new BasicDataSource();
-		rst.setDriverClassName($.mysql_driver);
-		rst.setUrl(url);
-		return rst;
+		String url="jdbc:mysql://localhost:3306/test?useUnicode=true&characterEncoding=utf-8&autoReconnect=true&failOverReadOnly=false";
+		MysqlConnectionPoolDataSource poolDbs=new MysqlConnectionPoolDataSource();
+		poolDbs.setUser("root");
+		poolDbs.setPassword("");
+		poolDbs.setUrl(url);
+		return poolDbs;
 	}
 }

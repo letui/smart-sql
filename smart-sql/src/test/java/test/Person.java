@@ -1,6 +1,7 @@
 package test;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import org.smartsql.inf.Column;
 import org.smartsql.inf.Table;
@@ -17,6 +18,11 @@ public class Person implements Serializable {
 	private String uname;
 	@Column("age")
 	private int age;
+	@Column("birth")
+	private Date birth;
+	
+	
+	
 	public int getId() {
 		return id;
 	}
@@ -35,8 +41,15 @@ public class Person implements Serializable {
 	public void setAge(int age) {
 		this.age = age;
 	}
+	
+	public Date getBirth() {
+		return birth;
+	}
+	public void setBirth(Date birth) {
+		this.birth = birth;
+	}
 	@Override
 	public String toString() {
-		return "Person [id=" + id + ", uname=" + uname + ", age=" + age + "]";
+		return "Person [id=" + id + ", uname=" + uname + ", age=" + age + ", birth=" + birth + "]";
 	}
 }

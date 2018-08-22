@@ -15,18 +15,19 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
+import org.smartsql.ex.S;
 import org.smartsql.ex.SQL;
 import org.smartsql.inf.Column;
 import org.smartsql.inf.Table;
 import org.smartsql.inf.Wrap;
 
-
 public class $ {
 	public static final String mysql_driver = "com.mysql.jdbc.Driver";
 	private R r;
-	private M m=M.autoCommit(true);
+	private M m = M.autoCommit(true);
 	private DataSource dbsource;
-	private ThreadLocal<Connection> local=new ThreadLocal<Connection>();
+	private ThreadLocal<Connection> local = new ThreadLocal<Connection>();
+
 	private $(DataSource dbsource, String sqlPath) {
 		this.dbsource = dbsource;
 		try {
@@ -35,6 +36,7 @@ public class $ {
 			e.printStackTrace();
 		}
 	}
+
 	@SuppressWarnings({ "unchecked", "hiding" })
 	public <T> T select(A target, Object... args) {
 		return (T) select(target.key, target.pojo, args);
@@ -86,7 +88,7 @@ public class $ {
 								entryFields[i].set(subObj, dbValue);
 							}
 						}
-						
+
 						subtables[sub].setAccessible(true);
 						subtables[sub].set(rt, subObj);
 					} while (++sub < subtables.length && tbl != null);
@@ -102,9 +104,9 @@ public class $ {
 		}
 		return null;
 	}
-	
-	public <Z> ArrayList<Z> select(Class<Z> pojo,String target, Object... args) {
-		ArrayList<Z> pojoList=new ArrayList<Z>();
+
+	public <Z> ArrayList<Z> select(Class<Z> pojo, String target, Object... args) {
+		ArrayList<Z> pojoList = new ArrayList<Z>();
 		String sql = r.get(target);
 		PreparedStatement prp = prepare(sql);
 		try {
@@ -131,7 +133,7 @@ public class $ {
 				}
 				return pojoList;
 			}
-			
+
 			Wrap wrap = pojo.getAnnotation(Wrap.class);
 			if (wrap != null) {
 				int sub = 0;
@@ -151,7 +153,7 @@ public class $ {
 								entryFields[i].set(subObj, dbValue);
 							}
 						}
-						
+
 						subtables[sub].setAccessible(true);
 						subtables[sub].set(rt, subObj);
 					} while (++sub < subtables.length && tbl != null);
@@ -169,11 +171,12 @@ public class $ {
 		return null;
 	}
 
-	public List<Map<String,Object>> select(String target, Object... args) {
+	public List<Map<String, Object>> select(String target, Object... args) {
 		String sql = r.get(target);
 		return selectDirectly(sql, args);
 	}
-	private List<Map<String,Object>> selectDirectly(String sql, Object... args) {
+
+	private List<Map<String, Object>> selectDirectly(String sql, Object... args) {
 		PreparedStatement prp = prepare(sql);
 		try {
 			if (args != null && args.length > 0) {
@@ -183,12 +186,12 @@ public class $ {
 			}
 			ResultSet rst = prp.executeQuery();
 			int columnCount = rst.getMetaData().getColumnCount();
-			List<Map<String,Object>> rowsList = new ArrayList<Map<String,Object>>();
-			ResultSetMetaData rstMt=rst.getMetaData();
+			List<Map<String, Object>> rowsList = new ArrayList<Map<String, Object>>();
+			ResultSetMetaData rstMt = rst.getMetaData();
 			while (rst.next()) {
-				Map<String,Object> row=new HashMap<String,Object>();
+				Map<String, Object> row = new HashMap<String, Object>();
 				for (int i = 0; i < columnCount; i++) {
-					row.put(rstMt.getColumnLabel(i+1),rst.getObject(i + 1));
+					row.put(rstMt.getColumnLabel(i + 1), rst.getObject(i + 1));
 				}
 				rowsList.add(row);
 			}
@@ -199,38 +202,41 @@ public class $ {
 		return null;
 	}
 
-	public List<Map<String,Object>> select(String target) {
-		return select(target,new Object[0]);
+	public List<Map<String, Object>> select(String target) {
+		return select(target, new Object[0]);
 	}
-	public List<Map<String,Object>> select(SQL sql) {
-		return selectDirectly(sql.toString(),new Object[0]);
+
+	public List<Map<String, Object>> select(SQL sql) {
+		return selectDirectly(sql.toString(), new Object[0]);
 	}
 
 	public boolean delete(String target) {
-		String sql=r.get(target);
+		String sql = r.get(target);
 		return exe(sql);
 	}
-	public boolean delete(String target,Object...params) {
-		String sql=r.get(target);
+
+	public boolean delete(String target, Object... params) {
+		String sql = r.get(target);
 		return exe(sql);
 	}
 
 	public boolean update(String target) {
-		String sql=r.get(target);
+		String sql = r.get(target);
 		return exe(sql);
 	}
-	public boolean update(String target,Object...params) {
-		String sql=r.get(target);
+
+	public boolean update(String target, Object... params) {
+		String sql = r.get(target);
 		return exe(sql);
 	}
 
 	public boolean insert(String target) {
-		String sql=r.get(target);
+		String sql = r.get(target);
 		return exe(sql);
 	}
-	
-	public boolean insert(String target,Object...params) {
-		String sql=r.get(target);
+
+	public boolean insert(String target, Object... params) {
+		String sql = r.get(target);
 		return exe(sql);
 	}
 
@@ -243,46 +249,52 @@ public class $ {
 		}
 		return true;
 	}
+
 	public void commit() {
 		try {
-			if(!local.get().isClosed()) {
+			if (!local.get().isClosed()) {
 				local.get().commit();
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void rollback() {
 		try {
-			if(!local.get().isClosed()) {
+			if (!local.get().isClosed()) {
 				local.get().rollback();
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
-	
 
 	public static $ init(DataSource dbs, String sqlPath) {
 		return new $(dbs, sqlPath);
 	}
-	
-	public static $ init(DataSource dbs, String sqlPath,M config) {
-		return init(dbs,sqlPath).config(config);
+	public static $ init(S server) {
+		return new $(server.dbs, server.sqlpath);
 	}
-	
+	public static $ init(S server,M config) {
+		return new $(server.dbs, server.sqlpath).config(config);
+	}
+
+	public static $ init(DataSource dbs, String sqlPath, M config) {
+		return init(dbs, sqlPath).config(config);
+	}
+
 	public $ config(M config) {
-		this.m=config;
+		this.m = config;
 		return this;
 	}
-	
+
 	public void sync(T to) {
-		if(to.syncType==T.TABLE_TO_MODEL) {
-			PreparedStatement prp=	this.prepare("show tables");
+		if (to.syncType == T.TABLE_TO_MODEL) {
+			PreparedStatement prp = this.prepare("show tables");
 			try {
-				ResultSet rst=prp.executeQuery();
-				while(rst.next()) {
+				ResultSet rst = prp.executeQuery();
+				while (rst.next()) {
 					System.out.println(rst.getString(1));
 				}
 			} catch (SQLException e) {
@@ -290,15 +302,16 @@ public class $ {
 			}
 		}
 	}
+
 	public Connection connect() {
 		try {
-			
-			if(local.get()==null || local.get().isClosed()){
-				Connection tmp=this.dbsource.getConnection();
+
+			if (local.get() == null || local.get().isClosed()) {
+				Connection tmp = this.dbsource.getConnection();
 				tmp.setAutoCommit(m.autoCommit);
 				local.set(tmp);
 			}
-			//System.out.println(local.get().hashCode());
+			// System.out.println(local.get().hashCode());
 			return local.get();
 		} catch (SQLException e) {
 			e.printStackTrace();

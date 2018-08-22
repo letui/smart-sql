@@ -7,12 +7,12 @@ import org.smartsql.core.A;
 
 //封装$，支持JQUERY风格操作方式
 public class Q {
-	private ThreadLocal<$> _$ =new ThreadLocal<$>();
 	private static ThreadLocal<Q> _Q =new ThreadLocal<Q>();
+	private ThreadLocal<$> _$ =new ThreadLocal<$>();
 	private ThreadLocal<L> _L =new ThreadLocal<L>();
-	public static Q $(S setup) {
-		if(setup!=null) {
-			$ smart=$.init(setup.dbs, setup.sqlPath);
+	public static Q $(S server) {
+		if(server!=null) {
+			$ smart=$.init(server.dbs, server.sqlpath);
 			Q q=new Q();
 			q._$.set(smart);
 			_Q.set(q);
