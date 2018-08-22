@@ -10,16 +10,19 @@ public class SQL {
 		sql.buf.append("SELECT * ");
 		return sql;
 	}
-	public static SQL update() {
+	public static SQL update(String table) {
 		SQL sql=new SQL();
+		sql.buf.append("UPDATE "+table+" ");
 		return sql;
 	}
 	public static SQL delete() {
 		SQL sql=new SQL();
+		sql.buf.append("DELETE ");
 		return sql;
 	}
-	public static SQL insert() {
+	public static SQL insert(String table) {
 		SQL sql=new SQL();
+		sql.buf.append("INSERT INTO "+table+" ");
 		return sql;
 	}
 	
@@ -28,6 +31,7 @@ public class SQL {
 		return this;
 	}
 	public SQL from(String table,String alias) {
+		this.buf.append("FROM "+table+" "+alias+" ");
 		return this;
 	}
 	
