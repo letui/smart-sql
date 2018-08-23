@@ -2,11 +2,13 @@ package test;
 
 
 import static org.smartsql.ex.L.select;
+import static org.smartsql.ex.L.update;
+import static org.smartsql.ex.L.insert;
+import static org.smartsql.ex.L.delete;
 import static org.smartsql.ex.Q.$;
 
-import java.sql.DatabaseMetaData;
-import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 
 import javax.sql.DataSource;
 
@@ -20,7 +22,12 @@ import org.smartsql.ex.SQL;
 import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource;
 
 public class Boot {
+	
 	public static void main(String[] args) {
+		$ smart = $.init(setup(),"src/main/resources");
+		smart.sync(T.tableToModel("test.mdl"));
+	}
+	public static void main1(String[] args) {
 		$ s = $.init(setup(),"src/main/resources");
 		ArrayList<Person> plist=s.select(Person.class,"test#all");
 		System.out.println(plist);
@@ -29,6 +36,26 @@ public class Boot {
 		s=$.init(S.url(url).user("root").pwd("").sqlpath("src/main/resources"));
 		System.out.println(s.select("test#all"));
 		
+		//boolean v=s.insert("test#insert",5,"testInsert",33,new Date());
+		//System.out.println(v);
+		
+		//s.delete("test#delete",5);
+		
+		s.update("test#updateUnameById","ImUpdate",4);
+		
+		
+		$(S.init(setup(),"src/main/resources"));
+		Person p3=$(select).done("test#select",Person.class,3);
+		System.out.println(p3.getUname());
+		ArrayList<Person> plist2=$(select).done(Person.class,"test#all");
+		System.out.println(plist2);
+		
+		String updateValue=$(update).done("test#updateUnameById","IM$",3);
+		System.out.println(updateValue);
+		
+//		String inserV=$(insert).done("test#insert",5,"testInsert",33,new Date());
+//		System.out.println(inserV);
+		$(delete).done("test#delete",5);
 	}
 	
 	
