@@ -22,102 +22,120 @@ import org.smartsql.ex.SQL;
 import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource;
 
 public class Boot {
-	
-	public static void main(String[] args) {
-		$ smart = $.init(setup(),"src/main/resources");
-		smart.sync(T.tableToModel("test.mdl"));
-	}
-	public static void main1(String[] args) {
-		$ s = $.init(setup(),"src/main/resources");
-		ArrayList<Person> plist=s.select(Person.class,"test#all");
-		System.out.println(plist);
-		
-		String url="jdbc:mysql://localhost:3306/test?useUnicode=true&characterEncoding=utf-8&autoReconnect=true&failOverReadOnly=false";
-		s=$.init(S.url(url).user("root").pwd("").sqlpath("src/main/resources"));
-		System.out.println(s.select("test#all"));
-		
-		//boolean v=s.insert("test#insert",5,"testInsert",33,new Date());
-		//System.out.println(v);
-		
-		//s.delete("test#delete",5);
-		
-		s.update("test#updateUnameById","ImUpdate",4);
-		
-		
-		$(S.init(setup(),"src/main/resources"));
-		Person p3=$(select).done("test#select",Person.class,3);
-		System.out.println(p3.getUname());
-		ArrayList<Person> plist2=$(select).done(Person.class,"test#all");
-		System.out.println(plist2);
-		
-		String updateValue=$(update).done("test#updateUnameById","IM$",3);
-		System.out.println(updateValue);
-		
-//		String inserV=$(insert).done("test#insert",5,"testInsert",33,new Date());
-//		System.out.println(inserV);
-		$(delete).done("test#delete",5);
-	}
-	
-	
-	public static void main3(String[] args) {
-		$(S.init(setup(),"src/main/resources"));
-		
-		String rst=$(select).done("test#count");
-		
-		System.out.println(rst);
-		
-			rst=$(select).done("test#select",2);
-		
-		System.out.println(rst);
-		
-		Person p=$(select).done(A.file("test").sql("select"),Person.class,2);
-		
-		System.out.println(p.getAge());
-		
-		 p=$(select).done(A.file("test").sql("select").pojo(Person.class),1);
-		 System.out.println(p.getUname());
-	}
-	public static void main2(String[] args) {
-		$ s = $.init(setup(),"src/main/resources");
-		
-		String rst=s.select("test#count").toString();
-		System.out.println(rst);
-		
-		Person p=s.select("test#select", Person.class, 2);
-		System.out.println(p.getAge());
-		
-		A target=A.file("test").sql("select");
-		Person p2=s.select(target, Person.class, 1);
-		System.out.println(p2.getUname());
-		
-		target=A.file("test").sql("select").pojo(Person.class);
-		p2=s.select(target,1);
-		System.out.println(p2.getUname());
-		
-		target=A.file("test").sql("select").pojo(WrapPerson.class);
-		WrapPerson wrp=s.select(target,1);
-		System.out.println(wrp.getP().getUname());
-		
-		
-		
-		
-		
-		$ smart = $.init(setup(),"src/main/resources").config(M.autoCommit(false));
-		
-		SQL sql=SQL.select().from("person").where().andEqual("id", "1");
-		System.out.println(smart.select(sql));
-		
-		
-		
-		smart.sync(T.tableToModel("test"));
-	}
 
-	public static DataSource setup() {
-		String url="jdbc:mysql://localhost:3306/test?useUnicode=true&characterEncoding=utf-8&autoReconnect=true&failOverReadOnly=false";
-		MysqlConnectionPoolDataSource poolDbs=new MysqlConnectionPoolDataSource();
-		poolDbs.setUser("root");
-		poolDbs.setPassword("");
-		poolDbs.setUrl(url);
-		return poolDbs;
-	}
+    public static void main(String[] args) {
+        //未实现ORM映射关系
+        $ smart = $.init(setup(), "src/main/resources");
+        smart.sync(T.tableToModel("test.mdl"));
+    }
+
+    //基本使用示范
+    public static void baseUseSample() {
+
+        //初始化Smart
+        $ s = $.init(setup(), "src/main/resources");
+        //查询POJO集合
+        ArrayList<Person> plist = s.select(Person.class, "test#all");
+        System.out.println(plist);
+
+        //动态设置数据链接信息
+        String url = "jdbc:mysql://localhost:3306/test?useUnicode=true&characterEncoding=utf-8&autoReconnect=true&failOverReadOnly=false";
+        //初始化
+        s = $.init(S.url(url).user("root").pwd("123456").sqlpath("src/main/resources"));
+        plist = s.select(Person.class, "test#all");
+        System.out.println(plist);
+
+        //插入数据
+        boolean v = s.insert("test#insert", 5, "testInsert", 33, new Date());
+        System.out.println(v);
+
+        //删除数据
+        s.delete("test#delete", 5);
+
+        //更新数据
+        s.update("test#updateUnameById", "ImUpdate", 4);
+
+        //高能Jquery语法糖
+        //初始化
+        $(S.init(setup(), "src/main/resources"));
+
+        //查询POJO
+        Person p3 = $(select).done("test#select", Person.class, 3);
+        System.out.println(p3.getUname());
+
+        //查询POJO List
+        ArrayList<Person> plist2 = $(select).done(Person.class, "test#all");
+        System.out.println(plist2);
+
+        //更新数据
+        String updateValue = $(update).done("test#updateUnameById", "IM$", 3);
+        System.out.println(updateValue);
+
+        //插入数据
+        String inserV = $(insert).done("test#insert", 5, "testInsert", 33, new Date());
+        System.out.println(inserV);
+
+        //删除数据
+        $(delete).done("test#delete", 5);
+    }
+
+
+    //扩展语法糖
+    public static void grammer_sugar() {
+        //初始化数据源
+        $(S.init(setup(), "src/main/resources"));
+
+        //结果集自动字符化处理
+        String rst = $(select).done("test#count");
+        System.out.println(rst);
+
+        //行数据展示
+        rst = $(select).done("test#select", 2);
+        System.out.println(rst);
+
+        //A: aim 瞄准器语法糖使用
+        Person p = $(select).done(A.file("test").sql("select"), Person.class, 2);
+        System.out.println(p.getAge());
+
+        //瞄准器 适配POJO
+        p = $(select).done(A.file("test").sql("select").pojo(Person.class), 1);
+        System.out.println(p.getUname());
+    }
+
+    //其他扩展
+    public static void other() {
+        $ s = $.init(setup(), "src/main/resources");
+
+        A target = A.file("test").sql("select");
+        Person p2 = s.select(target, Person.class, 1);
+        System.out.println(p2.getUname());
+
+        target = A.file("test").sql("select").pojo(Person.class);
+        p2 = s.select(target, 1);
+        System.out.println(p2.getUname());
+
+        //包裹类适配
+        target = A.file("test").sql("select").pojo(WrapPerson.class);
+        WrapPerson wrp = s.select(target, 1);
+        System.out.println(wrp.getP().getUname());
+
+        //是否自动提交
+        $ smart = $.init(setup(), "src/main/resources").config(M.autoCommit(false));
+
+        //动态SQL语法糖
+        SQL sql = SQL.select().from("person").where().andEqual("id", "1");
+        System.out.println(smart.select(sql));
+
+
+        smart.sync(T.tableToModel("test"));
+    }
+
+    public static DataSource setup() {
+        String url = "jdbc:mysql://localhost:3306/test?useUnicode=true&characterEncoding=utf-8&autoReconnect=true&failOverReadOnly=false";
+        MysqlConnectionPoolDataSource poolDbs = new MysqlConnectionPoolDataSource();
+        poolDbs.setUser("root");
+        poolDbs.setPassword("123456");
+        poolDbs.setUrl(url);
+        return poolDbs;
+    }
 }
