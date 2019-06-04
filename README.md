@@ -1,6 +1,7 @@
 # smart-sql
 <h3>快捷，方便，轻量</h3>
 重新造一个操作数据库的好轮子,好像也没别的了,喜欢的可以一起加入开发哦。
+<b>示范代码:https://github.com/letui/smart-sql/blob/master/smart-sql/src/test/java/test/Boot.java</b>
 <h3>花一分钟了解下？</h3>
 文件名:test.$,内容
 <pre>
@@ -47,5 +48,5 @@ Person p=$(select).done(A.file("test").sql("select"),Person.class,2);
 System.out.println(p.getAge());
 </pre>
 <h3>
-OVER
+
 </h3>
