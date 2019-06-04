@@ -1,11 +1,13 @@
 #select
 select * from person where id = ? 
+
 \\查询所有
 #all
 select * from person
 #count
 select count(*) from 
 person
+
 #insert
 insert into person (id,uname,age,birth) values (?,?,?,?)
 
