@@ -25,8 +25,9 @@ public class Boot {
 
     public static void main(String[] args) {
         //未实现ORM映射关系
-        $ smart = $.init(setup(), "src/main/resources");
-        smart.sync(T.tableToModel("test.mdl"));
+//        $ smart = $.init(setup(), "src/main/resources");
+//        smart.sync(T.tableToModel("test.mdl"));
+        grammer_sugar();
     }
 
     //基本使用示范
@@ -60,11 +61,11 @@ public class Boot {
         $(S.init(setup(), "src/main/resources"));
 
         //查询POJO
-        Person p3 = $(select).done("test#select", Person.class, 3);
+        Person p3 = $(select).doneObject("test#select", Person.class, 3);
         System.out.println(p3.getUname());
 
         //查询POJO List
-        ArrayList<Person> plist2 = $(select).done(Person.class, "test#all");
+        ArrayList<Person> plist2 = $(select).doneList(Person.class, "test#all");
         System.out.println(plist2);
 
         //更新数据
@@ -94,11 +95,11 @@ public class Boot {
         System.out.println(rst);
 
         //A: aim 瞄准器语法糖使用
-        Person p = $(select).done(A.file("test").sql("select"), Person.class, 2);
+        Person p = $(select).doneObject(A.file("test").sql("select"), Person.class, 2);
         System.out.println(p.getAge());
 
         //瞄准器 适配POJO
-        p = $(select).done(A.file("test").sql("select").pojo(Person.class), 1);
+        p = $(select).doneObject(A.file("test").sql("select").pojo(Person.class), 1);
         System.out.println(p.getUname());
     }
 
