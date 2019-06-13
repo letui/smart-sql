@@ -53,28 +53,28 @@ public class Q {
 		}
 		return null;
 	}
-	public <T> T done(A target,Class<T> t,Object...params) {
+	public <T> T doneObject(A target,Class<T> t,Object...params) {
 		if(this._L.get().equals(L.select)) {
 			return this._$.get().select(target,t,params);
 		}else {
 			throw new RuntimeException("not support : "+this._L.get());
 		}
 	}
-	public <T> T done(String target,Class<T> t,Object...params) {
+	public <T> T doneObject(String target,Class<T> t,Object...params) {
 		if(this._L.get().equals(L.select)) {
 			return this._$.get().select(target,t,params);
 		}else {
 			throw new RuntimeException("not support : "+this._L.get());
 		}
 	}
-	public <Z> ArrayList<Z> done(Class<Z> pojo,String target, Object... args) {
+	public <Z> ArrayList<Z> doneList(Class<Z> pojo,String target, Object... args) {
 		if(this._L.get().equals(L.select)) {
 			return this._$.get().select(pojo, target, args);
 		}else {
 			throw new RuntimeException("not support : "+this._L.get());
 		}
 	}
-	public <T> T done(A target,Object...params) {
+	public <T> T doneObject(A target,Object...params) {
 		if(this._L.get().equals(L.select)) {
 			return this._$.get().select(target,params);
 		}else {
