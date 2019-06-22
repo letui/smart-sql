@@ -1,5 +1,8 @@
 package org.smartsql.core;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.sql.Connection;
@@ -15,6 +18,7 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
+import com.sun.xml.internal.ws.util.StringUtils;
 import org.smartsql.ex.S;
 import org.smartsql.ex.SQL;
 import org.smartsql.inf.Column;
@@ -303,23 +307,34 @@ public class $ {
 		return this;
 	}
 
-	public void sync(T to) {
+	public void sync(T to) throws IOException {
 		if (to.syncType == T.TABLE_TO_MODEL) {
 			PreparedStatement prp = this.prepare("show tables");
 			try {
 				ResultSet rst = prp.executeQuery();
 				while (rst.next()) {
 					String tableName=rst.getString(1);
-					System.out.println(tableName);
+					String className= StringUtils.capitalize(to.parseName(tableName));
+					String basePath=System.getProperty("user.dir")+"/src/main/java/"+to.pkg.replaceAll("\\.","/")+"/";
+					FileOutputStream fileOutputStream=new FileOutputStream(new File(basePath+className+".java"));
+					fileOutputStream.write(("package "+to.pkg+";\rimport org.smartsql.inf.*;\n" +
+							"import java.util.*;\r@Table(\""+tableName+"\")\rpublic class "+className+"{\r\n").getBytes());
+
 					ResultSet tbRst=prepare("describe "+rst.getString(1)).executeQuery();
 					int colCount=tbRst.getMetaData().getColumnCount();
 					while(tbRst.next()) {
+						StringBuffer fieldsStr=new StringBuffer();
 						for (int i = 0; i < colCount; i++) {
-							System.out.print(tbRst.getMetaData().getColumnName(i+1)+":");
-							System.out.print(tbRst.getString(i+1)+",");
+//							System.out.print(tbRst.getMetaData().getColumnName(i+1)+":");
+//							System.out.print(tbRst.getString(i+1)+",");
+							fieldsStr.append("\t@Column(\""+tbRst.getString(i+1)+"\")\r\tprivate ").append(to.parseType(tbRst.getString(i+2))).append("  ").append(to.parseName(tbRst.getString(i+1)));
+							fieldsStr.append(";\r\n");
+							break;
 						}
-						System.out.println();
+						System.out.println(fieldsStr.toString());
+						fileOutputStream.write(fieldsStr.toString().getBytes());
 					}
+					fileOutputStream.write("\r\n}".getBytes());
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();

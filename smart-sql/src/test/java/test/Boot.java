@@ -7,8 +7,12 @@ import static org.smartsql.ex.L.insert;
 import static org.smartsql.ex.L.delete;
 import static org.smartsql.ex.Q.$;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.sql.DataSource;
 
@@ -23,11 +27,13 @@ import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource;
 
 public class Boot {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         //未实现ORM映射关系
-//        $ smart = $.init(setup(), "src/main/resources");
-//        smart.sync(T.tableToModel("test.mdl"));
-        grammer_sugar();
+        $ smart = $.init(setup(), "src/main/resources");
+        smart.sync(T.tableToModel("test.mdl"));
+        //grammer_sugar();
+
+
     }
 
     //基本使用示范
@@ -104,7 +110,7 @@ public class Boot {
     }
 
     //其他扩展
-    public static void other() {
+    public static void other() throws IOException {
         $ s = $.init(setup(), "src/main/resources");
 
         A target = A.file("test").sql("select");

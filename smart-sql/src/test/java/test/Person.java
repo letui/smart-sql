@@ -8,9 +8,6 @@ import org.smartsql.inf.Table;
 
 @Table("person")
 public class Person implements Serializable {
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	@Column("id")
 	private int id;
