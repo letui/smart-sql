@@ -268,6 +268,12 @@ public class $ {
 		}
 	}
 
+	public boolean save(Object obj){return true;}
+
+	public <T>T get(Object obj){return null;}
+
+	public boolean del(){return true;}
+
 	public void commit() {
 		try {
 			if (!local.get().isClosed()) {
